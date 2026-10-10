@@ -1,0 +1,320 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+import { achievements, categories, stats } from '../data/achievements';
+
+const fmt = (ym: string) =>
+  new Date(`${ym}-01`).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
+const sorted = [...achievements].sort((a, b) => (a.when < b.when ? 1 : -1));
+---
+
+<Base
+  title="Achievements"
+  description="Hackathon wins, ideathon prizes, internships abroad and more, won by Computer Engineering students at SOE CUSAT. The ACES achievements wall."
+>
+  <section class="container page-hero" data-theme="dark">
+    <span class="kicker" data-hero-fade>Achievements · {sorted.length} and counting</span>
+    <h1 data-reveal="hero">Things the batch brought home.</h1>
+    <p class="lede" data-hero-fade>
+      Hackathons, ideathons, a chess trophy, an internship in Japan. Won by students of this division, added here as they happen.
+    </p>
+  </section>
+
+  <section class="container section-tight" data-theme="dark">
+    <ul class="stats" data-fade-group>
+      {stats.map((s) => (
+        <li>
+          <span class="stat-num display"><span data-count={s.value}>{s.value}</span>{s.suffix}</span>
+          <span class="small muted">{s.label}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="container section-tight wall-wrap" data-theme="dark">
+    <div class="wall-head">
+      <div class="filter-bar" data-filter-bar role="group" aria-label="Filter by category">
+        <button type="button" class="chip" data-filter="all" aria-pressed="true" data-cursor="link">All</button>
+        {categories.map((c) => (
+          <button type="button" class="chip" data-filter={c} aria-pressed="false" data-cursor="link">{c}</button>
+        ))}
+      </div>
+      <p class="small muted">Newest first · tap a card for the full photo</p>
+    </div>
+
+    <ul class="wall">
+      {sorted.map((a, i) => (
+        <li class="card" data-filter-item data-category={a.category} data-fade={Math.min(i, 8) * 0.04}>
+          <button
+            type="button"
+            class="card-btn notch"
+            data-lightbox-open
+            data-alt={a.alt}
+            data-caption={`${a.title} — ${a.people.join(', ')}. ${a.detail}`}
+            data-cursor="open"
+          >
+            <span class="card-media">
+              <Image src={a.image} alt={a.alt} widths={[480, 800, 1100]} sizes="(max-width: 760px) 92vw, (max-width: 1100px) 46vw, 32vw" format="webp" loading={i < 3 ? 'eager' : 'lazy'} />
+            </span>
+            <span class="card-top">
+              <span class="tag">{a.category}</span>
+              <span class="tnum small">{fmt(a.when)}</span>
+            </span>
+            <span class="card-body">
+              <span class="card-title">{a.title}</span>
+              <span class="card-people small">{a.people.join(', ')}{a.batch && ` · ${a.batch}`}</span>
+              <span class="card-detail small">{a.detail}</span>
+            </span>
+          </button>
+        </li>
+      ))}
+    </ul>
+
+    <div class="submit" data-fade>
+      <p class="lede">Won something? Send the photo and two lines to the core team and it goes up here.</p>
+      <a href={site.join} class="btn btn-outline" target="_blank" rel="noopener" data-cursor="link">Send it on WhatsApp <Icon name="arrow" /></a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .stats {
+    list-style: none;
+    margin: 0;
+    padding: 2rem 0 0;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2rem;
+  }
+
+  .stats li {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .stat-num {
+    font-size: var(--t-3xl);
+    font-weight: 340;
+    letter-spacing: -0.04em;
+  }
+
+  .wall-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .filter-bar {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    padding: 0.3rem;
+    border-radius: var(--pill);
+    background: var(--panel);
+    border: 1px solid var(--line);
+  }
+
+  .chip {
+    padding: 0.55rem 1rem;
+    border-radius: var(--pill);
+    border: 0;
+    background: transparent;
+    color: var(--fg-muted);
+    font-size: var(--t-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  .chip:hover {
+    color: var(--fg);
+  }
+
+  .chip[aria-pressed='true'] {
+    background: var(--fg);
+    color: var(--bg);
+  }
+
+  .wall {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: minmax(0, 1fr);
+    grid-auto-flow: dense;
+    gap: var(--gap);
+  }
+
+  .card:nth-child(7n + 1) {
+    grid-column: span 2;
+  }
+
+  .card-btn {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--deep);
+    color: #fff;
+    text-align: left;
+    cursor: pointer;
+    isolation: isolate;
+  }
+
+  .card:nth-child(7n + 1) .card-btn {
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 24rem;
+  }
+
+  .card-media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .card-media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.02);
+    transition: transform 1.1s var(--ease-expo);
+  }
+
+  .card-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(180deg, rgba(5, 8, 15, 0.35) 0%, rgba(5, 8, 15, 0) 30%, rgba(5, 8, 15, 0.15) 55%, rgba(5, 8, 15, 0.92) 100%);
+    transition: opacity 0.5s;
+  }
+
+  .card-top {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    right: 1rem;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: rgba(245, 247, 250, 0.85);
+  }
+
+  .card-top .tag {
+    border-color: rgba(255, 255, 255, 0.35);
+    color: #fff;
+    background: rgba(5, 8, 15, 0.35);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+
+  .card-body {
+    position: absolute;
+    left: 1.25rem;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 2;
+    display: grid;
+    gap: 0.35rem;
+    transform: translateY(0.4rem);
+    transition: transform 0.6s var(--ease-expo);
+  }
+
+  .card-title {
+    font-family: var(--font-display);
+    font-size: var(--t-xl);
+    font-weight: 420;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  .card:nth-child(7n + 1) .card-title {
+    font-size: var(--t-2xl);
+    max-width: 22ch;
+  }
+
+  .card-people {
+    color: rgba(245, 247, 250, 0.8);
+  }
+
+  .card-detail {
+    color: rgba(245, 247, 250, 0.65);
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.7s var(--ease-expo), opacity 0.5s;
+  }
+
+  .card-btn:hover .card-detail,
+  .card-btn:focus-visible .card-detail {
+    max-height: 8rem;
+    opacity: 1;
+  }
+
+  .card-btn:hover .card-body {
+    transform: none;
+  }
+
+  .card-btn:hover .card-media :global(img) {
+    transform: scale(1.08);
+  }
+
+  .submit {
+    margin-top: clamp(3rem, 6vw, 5rem);
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 1100px) {
+    .wall {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card:nth-child(7n + 1) .card-btn {
+      min-height: 22rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .wall {
+      grid-template-columns: 1fr;
+    }
+
+    .card:nth-child(7n + 1) {
+      grid-column: auto;
+    }
+
+    .card:nth-child(7n + 1) .card-btn {
+      aspect-ratio: 4 / 5;
+      min-height: 0;
+      height: auto;
+    }
+
+    .stats {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .card-detail {
+      display: none;
+    }
+  }
+</style>

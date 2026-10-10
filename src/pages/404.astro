@@ -1,0 +1,39 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Base title="Page not found" description="That page does not exist on acescusat.tech." noindex>
+  <section class="container nf" data-theme="dark">
+    <p class="code display" aria-hidden="true">404</p>
+    <h1 data-reveal="hero">This page went for chai.</h1>
+    <p class="lede" data-hero-fade>It might be back, it might not. The link is probably old, or we moved something and forgot to tell the internet.</p>
+    <div class="btn-row" data-hero-fade>
+      <a href="/" class="btn" data-cursor="link">Back home <Icon name="arrow" /></a>
+      <a href="/events" class="btn btn-outline" data-cursor="link">See events <Icon name="arrow" /></a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    min-height: 100vh;
+    padding-block: calc(var(--nav-h) + 4rem) 4rem;
+    display: grid;
+    align-content: center;
+    gap: 1.5rem;
+    justify-items: start;
+  }
+
+  .code {
+    font-size: var(--t-mega);
+    font-weight: 300;
+    line-height: 0.85;
+    letter-spacing: -0.05em;
+    color: rgba(245, 247, 250, 0.08);
+  }
+
+  .nf h1 {
+    max-width: 14ch;
+  }
+</style>

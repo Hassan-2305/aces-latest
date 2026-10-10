@@ -1,0 +1,16 @@
+---
+interface Props {
+  speed?: string;
+  gap?: string;
+  dir?: 'left' | 'right';
+  class?: string;
+}
+const { speed = '40s', gap = '3rem', dir = 'left', class: className } = Astro.props;
+---
+
+<div class:list={['marquee', className]} data-dir={dir} style={`--mq-speed:${speed};--mq-gap:${gap}`} data-marquee>
+  <div class="marquee-track">
+    <slot />
+    <slot />
+  </div>
+</div>

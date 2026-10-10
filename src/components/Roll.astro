@@ -1,0 +1,18 @@
+---
+// Text that rolls on hover of its parent <a>/<button>. Split into chars at build time.
+interface Props {
+  text: string;
+  class?: string;
+}
+const { text, class: className } = Astro.props;
+const chars = [...text];
+---
+
+<span class:list={['roll', className]} aria-label={text}>
+  <span class="orig" aria-hidden="true">
+    {chars.map((c, i) => <span class="ch" style={`--i:${i}`}>{c}</span>)}
+  </span>
+  <span class="clone" aria-hidden="true">
+    {chars.map((c, i) => <span class="ch" style={`--i:${i}`}>{c}</span>)}
+  </span>
+</span>

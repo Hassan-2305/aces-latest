@@ -1,0 +1,161 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { materials, schemes } from '../data/materials';
+import { site } from '../data/site';
+---
+
+<Base
+  title="Study materials"
+  description="Notes and previous-year question papers for CUSAT B.Tech Computer Engineering, 2019 and 2023 schemes, semester by semester. Curated by ACES seniors."
+>
+  <section class="container page-hero" data-theme="dark">
+    <span class="kicker" data-hero-fade>Materials</span>
+    <h1 data-reveal="hero">Notes and papers, by semester.</h1>
+    <p class="lede" data-hero-fade>
+      Curated by seniors who sat the same exams. Pick your scheme, open the folder. If a semester is missing, it is because nobody has sent it yet.
+    </p>
+  </section>
+
+  <section class="container section-tight" data-theme="dark" data-tabs>
+    <div class="scheme-row" role="tablist" aria-label="Scheme">
+      {schemes.map((s, i) => (
+        <button type="button" role="tab" class="scheme" data-tab={s} aria-selected={i === 0 ? 'true' : 'false'} data-cursor="link">
+          <span class="display">{s}</span>
+          <span class="small muted">scheme</span>
+        </button>
+      ))}
+    </div>
+
+    {schemes.map((s, i) => (
+      <ol class="sems" data-tab-panel={s} hidden={i !== 0} role="tabpanel">
+        {materials
+          .filter((m) => m.scheme === s)
+          .sort((a, b) => a.semester - b.semester)
+          .map((m) => (
+            <li class="sem">
+              <span class="sem-num display tnum">S{m.semester}</span>
+              <span class="sem-name">Semester {m.semester}</span>
+              <span class="sem-links">
+                {m.notes ? (
+                  <a href={m.notes} class="btn btn-outline" target="_blank" rel="noopener" data-cursor="link">Notes <Icon name="external" /></a>
+                ) : (
+                  <span class="btn btn-outline is-off" aria-disabled="true">Notes, not yet</span>
+                )}
+                {m.pyq ? (
+                  <a href={m.pyq} class="btn btn-outline" target="_blank" rel="noopener" data-cursor="link">Question papers <Icon name="external" /></a>
+                ) : (
+                  <span class="btn btn-outline is-off" aria-disabled="true">Papers, not yet</span>
+                )}
+              </span>
+            </li>
+          ))}
+      </ol>
+    ))}
+  </section>
+
+  <section class="container section" data-theme="light">
+    <div class="ask">
+      <h2 data-reveal="lines">Have better notes?</h2>
+      <p class="lede" data-fade>
+        A folder link is enough. Drop it in the group with the scheme and semester, and it replaces whatever is here.
+      </p>
+      <a href={site.join} class="btn-round" target="_blank" rel="noopener" data-magnetic data-cursor="link" data-fade>
+        <span>Send a folder</span>
+      </a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .scheme-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .scheme {
+    display: grid;
+    gap: 0.1rem;
+    padding: 1.25rem 1.75rem;
+    min-width: 9rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--line);
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.3s, background-color 0.3s;
+  }
+
+  .scheme .display {
+    font-size: var(--t-2xl);
+    font-weight: 380;
+  }
+
+  .scheme[aria-selected='true'] {
+    border-color: var(--azure);
+    background: rgba(0, 127, 255, 0.08);
+  }
+
+  .sems {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .sem {
+    display: grid;
+    grid-template-columns: 5rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.4rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .sem-num {
+    font-size: var(--t-2xl);
+    font-weight: 340;
+    color: var(--fg-muted);
+  }
+
+  .sem-name {
+    font-family: var(--font-display);
+    font-size: var(--t-xl);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+
+  .sem-links {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .sem-links .btn {
+    min-height: 2.75rem;
+    padding-inline: 1.2rem;
+    font-size: var(--t-sm);
+  }
+
+  .is-off {
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .ask {
+    display: grid;
+    gap: 1.5rem;
+    justify-items: start;
+  }
+
+  @media (max-width: 760px) {
+    .sem {
+      grid-template-columns: 4rem 1fr;
+    }
+
+    .sem-links {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

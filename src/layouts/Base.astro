@@ -1,0 +1,135 @@
+---
+import '@fontsource-variable/stack-sans-notch';
+import '@fontsource-variable/dm-sans';
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Logo from '../components/Logo.astro';
+import { site } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  home?: boolean;
+  jsonLd?: Record<string, unknown>[];
+  noindex?: boolean;
+  /** Theme the page starts in */
+  theme?: 'dark' | 'light';
+}
+
+const { title, description, home = false, jsonLd = [], noindex = false, theme = 'dark' } = Astro.props;
+
+const fullTitle = home ? `${site.name} | ${site.fullName}, SOE CUSAT` : `${title} | ${site.name}`;
+const cleanPath = Astro.url.pathname.replace(/index\.html$/, '').replace(/\.html$/, '').replace(/\/$/, '') || '/';
+const canonical = new URL(cleanPath, site.url);
+const ogImage = new URL('/og.png', site.url);
+
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': `${site.url}/#org`,
+  name: site.name,
+  alternateName: site.fullName,
+  url: site.url,
+  logo: `${site.url}/icon-512.png`,
+  foundingDate: String(site.founded),
+  parentOrganization: {
+    '@type': 'CollegeOrUniversity',
+    name: 'Cochin University of Science and Technology',
+    url: 'https://cusat.ac.in',
+  },
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: `${site.address.venue}, ${site.address.campus}`,
+    addressLocality: site.address.city,
+    addressRegion: site.address.region,
+    postalCode: site.address.pin,
+    addressCountry: site.address.country,
+  },
+  sameAs: Object.values(site.social),
+};
+const ld = [organization, ...jsonLd];
+---
+
+<!doctype html>
+<html lang="en" dir="ltr" transition:animate="none">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="theme-color" content="#05080F" />
+    <meta name="color-scheme" content="dark light" />
+
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:locale" content={site.locale} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="ACES CUSAT wordmark on Oxford blue" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    {ld.map((obj) => <script type="application/ld+json" is:inline set:html={JSON.stringify(obj)} />)}
+
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      try {
+        if (!sessionStorage.getItem('aces-seen') && !matchMedia('(prefers-reduced-motion: reduce)').matches)
+          document.documentElement.classList.add('is-loading');
+      } catch (e) {}
+    </script>
+    <ClientRouter />
+  </head>
+  <body data-theme={theme}>
+    <!--
+      Association of Computer Engineering Students, SOE CUSAT.
+      Built by students, at Software Block, mostly after 4 PM.
+      Static Astro. Self-hosted fonts. GSAP + Lenis for motion. No tracking.
+    -->
+    <a class="skip" href="#main">Skip to content</a>
+
+    <div class="loader" data-loader transition:persist="loader" aria-hidden="true">
+      <div class="loader-mark"><Logo size="clamp(10rem, 22vw, 18rem)" /></div>
+      <div class="loader-count tnum">0</div>
+      <div class="loader-bar"></div>
+    </div>
+
+    <div class="curtain" data-curtain transition:persist="curtain" aria-hidden="true">
+      <div class="curtain-mark"><Logo size="clamp(9rem, 18vw, 14rem)" /></div>
+    </div>
+
+    <div class="cursor" data-cursor-dot transition:persist="cursor-dot" aria-hidden="true"></div>
+    <div class="cursor-ring" data-cursor-ring transition:persist="cursor-ring" aria-hidden="true"><span></span></div>
+
+    <Nav />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+
+    <dialog class="lightbox" data-lightbox>
+      <figure>
+        <img src="" alt="" />
+        <figcaption></figcaption>
+      </figure>
+    </dialog>
+
+    <script src="../scripts/app.ts"></script>
+  </body>
+</html>

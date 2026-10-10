@@ -1,0 +1,231 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import Marquee from '../components/Marquee.astro';
+import { headline, accreditation, recruiters, testimonials, brochure } from '../data/placements';
+
+const counted = recruiters.filter((r) => r.offers).sort((a, b) => b.offers! - a.offers!);
+---
+
+<Base
+  title="Placements"
+  description="Placement outcomes for B.Tech Computer Engineering at SOE CUSAT: ₹13 LPA highest package in 2024–25, 52 offers across EY, IBM, UST, Infosys, CDAC and more, and the 2025–26 placement brochure."
+>
+  <section class="container page-hero" data-theme="dark">
+    <span class="kicker" data-hero-fade>Placements</span>
+    <h1 data-reveal="hero">Where the batch goes next.</h1>
+    <p class="lede" data-hero-fade>{accreditation}. Numbers below are for the 2025 season, updated as offers come in.</p>
+  </section>
+
+  <section class="container section-tight" data-theme="dark">
+    <ul class="numbers" data-fade-group>
+      {headline.map((h) => (
+        <li>
+          <span class="number display">{h.prefix}<span data-count={h.value}>{h.value}</span>{h.suffix}</span>
+          <span class="small muted">{h.label}</span>
+        </li>
+      ))}
+    </ul>
+    <a href={brochure.href} class="btn brochure" target="_blank" rel="noopener" data-cursor="link" data-fade>
+      <Icon name="download" /> {brochure.title} <span class="faint">{brochure.size}</span>
+    </a>
+  </section>
+
+  <section class="section-tight logos" data-theme="dark" aria-label="Recruiters">
+    <Marquee speed="45s" gap="1.25rem">
+      {recruiters.map((r) => (
+        <div class="logo-plate">
+          <Image src={r.logo} alt={r.name} height={40} format="webp" loading="lazy" />
+        </div>
+      ))}
+    </Marquee>
+  </section>
+
+  <section class="container section" data-theme="light">
+    <div class="head">
+      <div class="head-row"><span>Recruitments, 2025 season</span><span class="tnum">{counted.reduce((n, r) => n + r.offers!, 0)} offers</span></div>
+      <h2 data-reveal="lines">Who hired, and how many.</h2>
+    </div>
+    <ol class="offers" data-fade-group>
+      {counted.map((r) => (
+        <li class="offer">
+          <span class="offer-count display tnum">{String(r.offers).padStart(2, '0')}</span>
+          <span class="offer-name">{r.name}</span>
+          <span class="offer-bar" style={`--w:${(r.offers! / counted[0].offers!) * 100}%`} aria-hidden="true"><i></i></span>
+        </li>
+      ))}
+    </ol>
+  </section>
+
+  <section class="container section" data-theme="light">
+    <div class="head">
+      <div class="head-row"><span>In their words</span></div>
+      <h2 data-reveal="lines">Three people who did it last year.</h2>
+    </div>
+    <ul class="quotes" data-fade-group>
+      {testimonials.map((t) => (
+        <li class="quote">
+          <div class="quote-photo media">
+            <Image src={t.photo} alt={`Portrait of ${t.name}`} width={320} height={320} format="webp" loading="lazy" />
+          </div>
+          <blockquote>{t.quote}</blockquote>
+          <p class="small"><strong>{t.name}</strong><span class="muted">, {t.company}</span></p>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .numbers {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+  }
+
+  .numbers li {
+    display: grid;
+    gap: 0.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .number {
+    font-size: clamp(3rem, 2rem + 5vw, 7rem);
+    font-weight: 300;
+    letter-spacing: -0.045em;
+    line-height: 1;
+  }
+
+  .brochure {
+    margin-top: 2.5rem;
+  }
+
+  .brochure .faint {
+    font-weight: 400;
+  }
+
+  .logos {
+    padding-block: 0 var(--section);
+  }
+
+  .logo-plate {
+    display: grid;
+    place-items: center;
+    height: 6rem;
+    padding: 0 2.25rem;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--line);
+  }
+
+  .logo-plate :global(img) {
+    height: 2.25rem;
+    width: auto;
+    max-width: 9rem;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.85;
+  }
+
+  .offers {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .offer {
+    display: grid;
+    grid-template-columns: 5rem minmax(0, 14rem) 1fr;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.1rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .offer-count {
+    font-size: var(--t-2xl);
+    font-weight: 340;
+  }
+
+  .offer-name {
+    font-weight: 500;
+  }
+
+  .offer-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--panel);
+    overflow: hidden;
+  }
+
+  .offer-bar i {
+    display: block;
+    height: 100%;
+    width: var(--w);
+    background: linear-gradient(90deg, var(--azure), var(--violet));
+    border-radius: 3px;
+    transform-origin: left;
+    animation: grow 1.4s var(--ease-expo) both;
+  }
+
+  @keyframes grow {
+    from {
+      transform: scaleX(0);
+    }
+  }
+
+  .quotes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gap);
+  }
+
+  .quote {
+    display: grid;
+    gap: 1.25rem;
+    padding: 2rem;
+    border-radius: var(--radius);
+    background: var(--plate);
+    border: 1px solid var(--line);
+  }
+
+  .quote-photo {
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+  }
+
+  blockquote {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--t-xl);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 900px) {
+    .numbers,
+    .quotes {
+      grid-template-columns: 1fr;
+    }
+
+    .offer {
+      grid-template-columns: 4rem 1fr;
+    }
+
+    .offer-bar {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

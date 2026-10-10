@@ -1,0 +1,293 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+import { core, groups, faculty, year, headcount } from '../data/team';
+const chair = core[0];
+---
+
+<Base
+  title={`Team ${year}`}
+  description={`The ${year} ACES CUSAT team: ${headcount} students across media, content, sponsorship, alumni, outreach and tech, plus the faculty coordinators of the Division of Computer Engineering, SOE CUSAT.`}
+>
+  <section class="container page-hero" data-theme="dark">
+    <span class="kicker" data-hero-fade>Team, {year} · {headcount} people</span>
+    <h1 data-reveal="hero">Elected by the batch. Answerable to it.</h1>
+    <p class="lede" data-hero-fade>If something on this site is wrong, it is one of these people’s fault. Say hi at the next session.</p>
+  </section>
+
+  <section class="container section-tight" data-theme="dark">
+    <ul class="people">
+      {core.map((m, i) => (
+        <li class="person" style={`--i:${i}`}>
+          <div class="person-media media notch" data-img-reveal data-parallax>
+            {m.photo && (
+              <Image src={m.photo} alt={`Portrait of ${m.name}`} width={720} height={900} format="webp" loading="eager" style={m.focus ? `object-position:${m.focus}` : undefined} />
+            )}
+          </div>
+          <div class="person-body">
+            <h3>{m.name}</h3>
+            <p class="muted">{m.role}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  {chair.note && (
+    <section class="container section-tight" data-theme="dark">
+      <figure class="quote">
+        <blockquote data-scrub>{chair.note}</blockquote>
+        <figcaption class="small muted">{chair.name}, {chair.role}</figcaption>
+      </figure>
+    </section>
+  )}
+
+  <section class="container section" data-theme="light">
+    <div class="head">
+      <div class="head-row"><span>Teams</span><span class="tnum">{groups.length} teams</span></div>
+      <h2 data-reveal="lines">Who does what.</h2>
+    </div>
+    <div class="groups">
+      {groups.map((g) => (
+        <section class="group" aria-label={g.name}>
+          <header class="group-head">
+            <h3>{g.name}</h3>
+            <p class="small muted">{g.blurb}</p>
+          </header>
+          <ul class="members" data-fade-group>
+            {g.members.map((m) => (
+              <li class="member">
+                <div class="member-media media">
+                  {m.photo && (
+                    <Image src={m.photo} alt={`Portrait of ${m.name}`} width={480} height={600} format="webp" loading="lazy" style={m.focus ? `object-position:${m.focus}` : undefined} />
+                  )}
+                </div>
+                <p class="member-name">{m.name}</p>
+                <p class="small muted">{m.role}</p>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  </section>
+
+  <section class="container section" data-theme="light">
+    <div class="head">
+      <div class="head-row"><span>Faculty</span></div>
+      <h2 data-reveal="lines">The two people who sign the forms.</h2>
+    </div>
+    <ul class="faculty">
+      {faculty.map((f) => (
+        <li class="fac">
+          <div class="fac-media media" data-img-reveal>
+            {f.photo && <Image src={f.photo} alt={`Portrait of ${f.name}`} width={480} height={480} format="webp" loading="lazy" />}
+          </div>
+          <div class="fac-body">
+            <h3>{f.name}</h3>
+            <p class="small muted">{f.role}, Division of Computer Engineering</p>
+            {f.note && <blockquote class="fac-quote" data-fade>{f.note}</blockquote>}
+          </div>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="container section-tight" data-theme="light">
+    <div class="join">
+      <h2 data-reveal="lines">Want in next year?</h2>
+      <p class="lede" data-fade>The team is picked each year. The surest way onto it is to run a session, help at an event, or fix this website.</p>
+      <a href={site.join} class="arrow-link" target="_blank" rel="noopener" data-cursor="link" data-fade>Start in the group <Icon name="arrow" /></a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .people {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gap);
+  }
+
+  .person {
+    display: grid;
+    gap: 1rem;
+    margin-top: calc(var(--i) * 3rem);
+  }
+
+  .person-media {
+    aspect-ratio: 4 / 5;
+  }
+
+  .person-media :global(img) {
+    height: 116%;
+  }
+
+  .person-body h3 {
+    font-size: var(--t-2xl);
+  }
+
+  .quote {
+    margin: 0;
+    max-width: 60rem;
+  }
+
+  .quote blockquote {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1rem + 2.2vw, 3rem);
+    font-weight: 380;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    text-wrap: pretty;
+  }
+
+  .quote figcaption {
+    margin-top: 1.5rem;
+  }
+
+  .groups {
+    display: grid;
+    gap: clamp(3rem, 6vw, 5rem);
+  }
+
+  .group {
+    display: grid;
+    grid-template-columns: minmax(0, 0.25fr) minmax(0, 0.75fr);
+    gap: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .group-head {
+    display: grid;
+    gap: 0.4rem;
+    align-content: start;
+  }
+
+  .group-head h3 {
+    font-size: var(--t-2xl);
+  }
+
+  .members {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--gap);
+  }
+
+  .member {
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .member-media {
+    aspect-ratio: 4 / 5;
+    margin-bottom: 0.5rem;
+  }
+
+  .member-media :global(img) {
+    transition: transform 0.9s var(--ease-expo);
+  }
+
+  .member:hover .member-media :global(img) {
+    transform: scale(1.05);
+  }
+
+  .member-name {
+    font-weight: 500;
+    line-height: 1.3;
+  }
+
+  .faculty {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--gap);
+  }
+
+  .fac {
+    display: grid;
+    grid-template-columns: minmax(0, 0.28fr) minmax(0, 0.72fr);
+    gap: 2.5rem;
+    align-items: start;
+    padding: 2.5rem 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .fac-media {
+    aspect-ratio: 1;
+    max-width: 18rem;
+    border-radius: var(--radius);
+  }
+
+  .fac-body {
+    display: grid;
+    gap: 0.5rem;
+    max-width: 60ch;
+  }
+
+  .fac-quote {
+    margin: 1.25rem 0 0;
+    padding-left: 1.25rem;
+    border-left: 2px solid var(--azure);
+    font-family: var(--font-display);
+    font-size: var(--t-xl);
+    font-weight: 400;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    text-wrap: pretty;
+  }
+
+  .join {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .group {
+      grid-template-columns: 1fr;
+    }
+
+    .members {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 760px) {
+    .people {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .person {
+      margin-top: 0;
+    }
+
+    .fac {
+      grid-template-columns: 1fr;
+    }
+
+    .fac-media {
+      max-width: 12rem;
+    }
+
+    .members {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 480px) {
+    .people {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

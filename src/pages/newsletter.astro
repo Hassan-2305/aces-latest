@@ -1,0 +1,194 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { issues } from '../data/newsletter';
+import { brochure } from '../data/placements';
+
+const fmt = (d: string) => new Date(d).toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+const latest = issues[0];
+---
+
+<Base
+  title="Newsletter"
+  description="The ACES newsletter from the Division of Computer Science and Engineering, SOE CUSAT: event recaps, placement updates and department news, issue by issue."
+>
+  <section class="container page-hero" data-theme="dark">
+    <span class="kicker" data-hero-fade>Newsletter</span>
+    <h1 data-reveal="hero">The division, on paper.</h1>
+    <p class="lede" data-hero-fade>
+      What happened, who got placed, what is coming. Read it here, page by page, or grab the PDF where we have one.
+    </p>
+  </section>
+
+  {latest && (
+    <section class="container section-tight" data-theme="dark" aria-labelledby="latest">
+      <div class="issue-head">
+        <div>
+          <p class="small muted">Issue {String(latest.number).padStart(2, '0')}, {fmt(latest.date)}</p>
+          <h2 id="latest" data-reveal="lines">{latest.title}</h2>
+        </div>
+        <p class="lede" data-fade>{latest.blurb}</p>
+      </div>
+
+      <div class="reader" data-reader data-fade>
+        <div class="reader-strip" data-reader-strip data-cursor="drag">
+          {latest.pages.map((p, i) => (
+            <figure class="page">
+              <Image src={p} alt={`${latest.title}, page ${i + 1}`} widths={[640, 960]} sizes="(max-width: 760px) 90vw, 44vw" format="webp" loading={i < 2 ? 'eager' : 'lazy'} />
+            </figure>
+          ))}
+        </div>
+        <div class="reader-bar">
+          <button type="button" class="reader-btn" data-reader-prev aria-label="Previous page" data-cursor="link"><Icon name="arrow" class="flip" /></button>
+          <span class="tnum small" data-reader-pos>1 / {latest.pages.length}</span>
+          <button type="button" class="reader-btn" data-reader-next aria-label="Next page" data-cursor="link"><Icon name="arrow" /></button>
+          {latest.pdf && <a href={latest.pdf} class="arrow-link small" target="_blank" rel="noopener">PDF <Icon name="download" /></a>}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="container section" data-theme="light">
+    <div class="head">
+      <div class="head-row"><span>All issues</span><span class="tnum">{issues.length}</span></div>
+      <h2 data-reveal="lines">Back issues.</h2>
+    </div>
+    <ol class="issues" data-fade-group>
+      {issues.map((i) => (
+        <li class="issue">
+          <span class="issue-num display tnum">{String(i.number).padStart(2, '0')}</span>
+          <span class="issue-name">{i.title}</span>
+          <span class="small muted">{fmt(i.date)}</span>
+          <a href="#latest" class="arrow-link small" data-cursor="link">Read <Icon name="arrow" /></a>
+        </li>
+      ))}
+      <li class="issue is-doc">
+        <span class="issue-num display tnum"><Icon name="doc" size={28} /></span>
+        <span class="issue-name">{brochure.title}</span>
+        <span class="small muted">{brochure.size}</span>
+        <a href={brochure.href} class="arrow-link small" target="_blank" rel="noopener" data-cursor="link">Download <Icon name="download" /></a>
+      </li>
+    </ol>
+    <p class="muted small note" data-fade>Editions go up here as they are published. Want to write for the next one? Say so in the group.</p>
+  </section>
+</Base>
+
+<style>
+  .issue-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 2rem;
+    align-items: end;
+    margin-bottom: 2.5rem;
+  }
+
+  .issue-head h2 {
+    margin-top: 0.75rem;
+    max-width: 14ch;
+  }
+
+  .reader {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .reader-strip {
+    display: flex;
+    gap: var(--gap);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding-bottom: 0.5rem;
+  }
+
+  .reader-strip::-webkit-scrollbar {
+    display: none;
+  }
+
+  .page {
+    flex: 0 0 auto;
+    width: min(100%, 44rem);
+    margin: 0;
+    scroll-snap-align: start;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: #fff;
+  }
+
+  .reader-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .reader-btn {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    background: transparent;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+  }
+
+  .reader-btn:hover {
+    background: var(--azure);
+    color: #fff;
+    border-color: var(--azure);
+  }
+
+  .reader-btn :global(.flip) {
+    transform: rotate(180deg);
+  }
+
+  .issues {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .issue {
+    display: grid;
+    grid-template-columns: 5rem minmax(0, 1fr) 10rem auto;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.4rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .issue-num {
+    font-size: var(--t-2xl);
+    font-weight: 340;
+    color: var(--fg-muted);
+  }
+
+  .issue-name {
+    font-family: var(--font-display);
+    font-size: var(--t-xl);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+  }
+
+  .note {
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 760px) {
+    .issue-head {
+      grid-template-columns: 1fr;
+    }
+
+    .issue {
+      grid-template-columns: 4rem 1fr;
+    }
+
+    .issue > .small,
+    .issue > .arrow-link {
+      grid-column: 2;
+    }
+  }
+</style>

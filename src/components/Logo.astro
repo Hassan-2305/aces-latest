@@ -1,0 +1,41 @@
+---
+// ACES mark (traced) + "CUSAT" as live text so it stays legible at every size.
+import Mark from '../assets/brand/aces-mark.svg';
+interface Props {
+  /** CSS width of the mark */
+  size?: string;
+  class?: string;
+}
+const { size = '4.4rem', class: className } = Astro.props;
+---
+
+<span class:list={['logo', className]} style={`--w:${size}`} aria-hidden="true">
+  <Mark />
+  <span class="logo-sub">CUSAT</span>
+</span>
+
+<style>
+  .logo {
+    display: inline-grid;
+    justify-items: end;
+    gap: calc(var(--w) * 0.035);
+    width: var(--w);
+    color: currentColor;
+    line-height: 1;
+  }
+
+  .logo :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+
+  .logo-sub {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: calc(var(--w) * 0.15);
+    letter-spacing: 0.22em;
+    margin-right: -0.22em;
+    line-height: 1;
+    opacity: 0.85;
+  }
+</style>

@@ -1,0 +1,905 @@
+---
+import { Image, Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import Marquee from '../components/Marquee.astro';
+import { site } from '../data/site';
+import { upcoming, past, fmtDate, fmtTime, kindLabel } from '../data/events';
+import { achievements, stats } from '../data/achievements';
+import { headline, recruiters, brochure } from '../data/placements';
+
+import speaker from '../assets/photos/speaker.png';
+import frontRow from '../assets/photos/front-row.png';
+import huddle from '../assets/photos/huddle.png';
+import laptops from '../assets/photos/laptops.png';
+import g1 from '../assets/gallery/gallery1.png';
+import g2 from '../assets/gallery/gallery2.png';
+import g3 from '../assets/gallery/gallery3.png';
+import g4 from '../assets/gallery/gallery4.png';
+import g5 from '../assets/gallery/gallery5.png';
+import campus from '../assets/brand/campus-dusk.jpg';
+
+const featured = upcoming[0] ?? past[0];
+const isUpcoming = upcoming.length > 0;
+const recent = past.filter((e) => e !== featured).slice(0, 5);
+const wins = achievements.slice(0, 4);
+
+const strip = [
+  { src: g1, alt: 'Students at a community meetup in a lecture hall.' },
+  { src: speaker, alt: 'A speaker with a microphone addressing a full seminar hall.' },
+  { src: g3, alt: 'Teams working during Hackathon 2024.' },
+  { src: frontRow, alt: 'Students laughing in the front row of a seminar hall.' },
+  { src: g4, alt: 'An AI tech talk in progress.' },
+  { src: huddle, alt: 'Three students leaning over one laptop.' },
+  { src: g5, alt: 'A project showcase table.' },
+];
+
+const pillars = [
+  {
+    title: 'Workshops you can follow along with',
+    text: 'Git, VS Code, security, web, DevOps. Laptops open, one thing built by the end. Never a slide deck read aloud.',
+    img: laptops,
+    alt: 'Two students working on laptops in a lecture hall.',
+  },
+  {
+    title: 'Talks from people who left this room',
+    text: 'Alumni at Microsoft, TCS, Reliance, Flipkart and their own startups come back and say what they wish they had known.',
+    img: speaker,
+    alt: 'An alumnus speaking to a full seminar hall.',
+  },
+  {
+    title: 'Placement prep that starts early',
+    text: 'HireUp resume sessions, mock interviews and blunt feedback, with every SOE association in the same room.',
+    img: g2,
+    alt: 'A web development workshop.',
+  },
+  {
+    title: 'Ideathons, hackathons, the tech fest',
+    text: 'Ignite Ideas and Foundry are ours. We field teams for everyone else’s, and we have been part of CUSAT’s tech fest since INSPIRE.',
+    img: g3,
+    alt: 'Teams working at a hackathon.',
+  },
+  {
+    title: 'Notes and previous-year papers',
+    text: 'Curated by seniors, scheme by scheme. The stuff that usually lives in a WhatsApp forward, now with a URL.',
+    img: g5,
+    alt: 'Students at a project showcase.',
+  },
+  {
+    title: 'A soft landing for first-years',
+    text: 'Chit Chat sessions with seniors, no slides. Ask the questions you would not ask in class.',
+    img: frontRow,
+    alt: 'First-years in the front row.',
+  },
+];
+
+const websiteLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: site.name,
+  url: site.url,
+  publisher: { '@id': `${site.url}/#org` },
+};
+---
+
+<Base home title="Home" description={site.description} jsonLd={[websiteLd]}>
+  <!-- ================= hero ================= -->
+  <section class="hero" data-theme="dark">
+    <div class="hero-bg" data-hero-bg aria-hidden="true">
+      <Picture
+        src={campus}
+        alt=""
+        widths={[900, 1400, 1959]}
+        sizes="100vw"
+        formats={['avif']}
+        fallbackFormat="webp"
+        loading="eager"
+        fetchpriority="high"
+      />
+    </div>
+    <div class="hero-shade" aria-hidden="true"></div>
+
+    <div class="container hero-inner">
+      <p class="hero-kicker small" data-hero-fade>
+        {site.fullName} · School of Engineering, CUSAT
+      </p>
+      <h1 data-reveal="hero">Where CUSAT’s computer engineers build together.</h1>
+      <div class="hero-row">
+        <p class="lede" data-hero-fade>
+          Workshops, alumni talks, hackathons, placement prep and one very loud
+          group chat. Run by students, for {site.members} students, since 2006.
+        </p>
+        <div class="hero-actions" data-hero-fade>
+          <a href="/events" class="btn-round" data-magnetic data-cursor="link">
+            <span>See what’s on</span>
+          </a>
+          <a href={site.join} class="btn btn-azure" target="_blank" rel="noopener" data-cursor="link">
+            Join ACES
+            <Icon name="arrow" />
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container hero-foot" data-hero-fade>
+      <ul class="hero-facts">
+        <li><span class="display tnum">2006</span><span class="small">founded</span></li>
+        <li><span class="display tnum">{site.members}</span><span class="small">members</span></li>
+        <li><span class="display tnum">52</span><span class="small">offers, 2025</span></li>
+        <li><span class="display tnum">₹13 LPA</span><span class="small">highest package</span></li>
+      </ul>
+      <p class="hero-scroll small" aria-hidden="true">Scroll <i></i></p>
+    </div>
+  </section>
+
+  <div class="strip" data-hero-fade>
+    <Marquee speed="60s" gap="1rem">
+      {strip.map((s) => (
+        <figure class="strip-item">
+          <Image src={s.src} alt={s.alt} widths={[420, 640]} sizes="(max-width: 760px) 60vw, 22vw" format="webp" loading="eager" />
+        </figure>
+      ))}
+    </Marquee>
+  </div>
+
+  <!-- ================= manifesto ================= -->
+  <section class="section manifesto" data-theme="dark">
+    <div class="container">
+      <p class="manifesto-text" data-scrub>
+        ACES is the {site.members} students of the Division of Computer
+        Engineering at CUSAT’s School of Engineering. Since 2006 it has been the
+        room where the syllabus stops and the building starts: workshops with
+        laptops open, alumni who come back and tell the truth about industry,
+        hackathon teams that lose sleep together, placement prep that starts in
+        second year, and a group chat that has never once been quiet.
+      </p>
+      <a href="/team" class="arrow-link manifesto-link" data-fade data-cursor="link">
+        Meet the people running it
+        <Icon name="arrow" />
+      </a>
+    </div>
+  </section>
+
+  <!-- ================= pillars: pinned horizontal ================= -->
+  <section class="pillars" data-hscroll data-theme="dark" aria-label="What ACES does">
+    <div class="pillars-track" data-hscroll-track>
+      <div class="pillar pillar-intro">
+        <p class="small muted">What a year looks like</p>
+        <h2>Six things we do, on repeat.</h2>
+        <p class="lede">Most of it in Software Block after 4 PM. Some of it online. All of it planned by students who were in your seat a year ago.</p>
+        <p class="small faint pillar-hint">Keep scrolling <Icon name="arrow" size={14} /></p>
+      </div>
+      {pillars.map((p, i) => (
+        <article class="pillar">
+          <div class="pillar-media media" data-parallax>
+            <Image src={p.img} alt={p.alt} widths={[600, 900]} sizes="(max-width: 900px) 80vw, 34vw" format="webp" loading="lazy" />
+          </div>
+          <div class="pillar-body">
+            <span class="pillar-index tnum">{String(i + 1).padStart(2, '0')} / {String(pillars.length).padStart(2, '0')}</span>
+            <h3>{p.title}</h3>
+            <p class="muted">{p.text}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+    <div class="pillars-bar" aria-hidden="true"><i data-hscroll-bar></i></div>
+  </section>
+
+  <!-- ================= events ================= -->
+  <section class="section events" data-theme="light">
+    <div class="container">
+      <div class="head">
+        <div class="head-row">
+          <span>{isUpcoming ? 'Next up' : 'Latest'}</span>
+          <a href="/events" class="arrow-link" data-cursor="link">All events <Icon name="arrow" /></a>
+        </div>
+        <h2 data-reveal="lines">{isUpcoming ? 'Save the date.' : 'What we did last.'}</h2>
+      </div>
+
+      {featured && (
+        <article class="feature">
+          <a href={`/events#${featured.slug}`} class="feature-media media notch" data-img-reveal data-cursor="view">
+            <Image src={featured.poster} alt={featured.posterAlt} widths={[480, 760]} sizes="(max-width: 760px) 90vw, 32vw" format="webp" loading="lazy" />
+          </a>
+          <div class="feature-body">
+            <span class="tag">{kindLabel[featured.kind]}</span>
+            <h3 data-reveal="lines">{featured.name}</h3>
+            <p class="muted" data-fade>{featured.summary}</p>
+            <dl class="meta" data-fade>
+              <div><dt><Icon name="calendar" size={18} /><span class="sr-only">Date</span></dt><dd>{fmtDate(featured.start)}</dd></div>
+              <div><dt><Icon name="clock" size={18} /><span class="sr-only">Time</span></dt><dd>{fmtTime(featured.start)}</dd></div>
+              <div><dt><Icon name="pin" size={18} /><span class="sr-only">Venue</span></dt><dd>{featured.location}</dd></div>
+            </dl>
+            {featured.registerUrl && (
+              <a href={featured.registerUrl} class="btn btn-azure" target="_blank" rel="noopener" data-cursor="link" data-fade>
+                Register <Icon name="arrow" />
+              </a>
+            )}
+          </div>
+        </article>
+      )}
+
+      <div class="hlist" data-hlist>
+        <div class="hlist-preview" data-hlist-preview aria-hidden="true">
+          {recent.map((e) => (
+            <Image src={e.poster} alt="" widths={[400]} sizes="20vw" format="webp" loading="lazy" />
+          ))}
+        </div>
+        <ol class="hlist-items">
+          {recent.map((e) => (
+            <li>
+              <a href={`/events#${e.slug}`} class="hlist-item" data-hlist-item data-cursor="view">
+                <span class="hlist-date tnum">{fmtDate(e.start)}</span>
+                <span class="hlist-title">{e.name}</span>
+                <span class="tag">{kindLabel[e.kind]}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= wins ================= -->
+  <section class="section wins" data-theme="light">
+    <div class="container">
+      <div class="head">
+        <div class="head-row">
+          <span>Achievements</span>
+          <a href="/achievements" class="arrow-link" data-cursor="link">All wins <Icon name="arrow" /></a>
+        </div>
+        <h2 data-reveal="lines">Things the batch brought home.</h2>
+      </div>
+
+      <div class="wins-grid">
+        {wins.map((w, i) => (
+          <a href="/achievements" class:list={['win', `win-${i + 1}`]} data-cursor="view">
+            <div class="media notch" data-img-reveal>
+              <Image src={w.image} alt={w.alt} widths={[480, 800]} sizes="(max-width: 760px) 90vw, 30vw" format="webp" loading="lazy" />
+            </div>
+            <p class="win-title">{w.title}</p>
+            <p class="small muted">{w.people.join(', ')}</p>
+          </a>
+        ))}
+        <ul class="stats" data-fade-group>
+          {stats.map((s) => (
+            <li>
+              <span class="stat-num display"><span data-count={s.value}>{s.value}</span>{s.suffix}</span>
+              <span class="small muted">{s.label}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= placements ================= -->
+  <section class="section placements" data-theme="dark">
+    <div class="container">
+      <div class="head">
+        <div class="head-row">
+          <span>Placements</span>
+          <a href="/placements" class="arrow-link" data-cursor="link">The full picture <Icon name="arrow" /></a>
+        </div>
+        <h2 data-reveal="lines">Where the batch goes next.</h2>
+      </div>
+      <ul class="numbers" data-fade-group>
+        {headline.map((h) => (
+          <li>
+            <span class="number display">{h.prefix}<span data-count={h.value}>{h.value}</span>{h.suffix}</span>
+            <span class="small muted">{h.label}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="logos" data-fade>
+      <Marquee speed="45s" gap="1.25rem">
+        {recruiters.map((r) => (
+          <div class:list={['logo-plate', { 'is-dark': r.dark }]}>
+            <Image src={r.logo} alt={r.name} height={40} format="webp" loading="lazy" />
+          </div>
+        ))}
+      </Marquee>
+    </div>
+    <div class="container brochure-row" data-fade>
+      <a href={brochure.href} class="arrow-link" target="_blank" rel="noopener" data-cursor="link">
+        {brochure.title} ({brochure.size}) <Icon name="arrow" />
+      </a>
+    </div>
+  </section>
+
+</Base>
+
+<style>
+  /* ---------- hero ---------- */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    padding-top: calc(var(--nav-h) + clamp(4rem, 10vw, 8rem));
+    overflow: hidden;
+    color: #fff;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: -6% 0 0;
+    z-index: 0;
+    will-change: transform;
+  }
+
+  .hero-bg :global(picture) {
+    position: absolute;
+    inset: 0;
+    display: block;
+  }
+
+  .hero-bg :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 68% 58%;
+    transform: scale(1.18);
+    transform-origin: 50% 40%;
+  }
+
+  .hero-shade {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+      linear-gradient(180deg, rgba(5, 8, 15, 0.62) 0%, rgba(5, 8, 15, 0.1) 28%, rgba(5, 8, 15, 0.3) 62%, var(--void) 100%),
+      linear-gradient(100deg, rgba(5, 8, 15, 0.72) 0%, rgba(5, 8, 15, 0.38) 45%, rgba(5, 8, 15, 0.05) 100%);
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 2;
+    align-self: end;
+  }
+
+  .hero-kicker {
+    margin-bottom: 2rem;
+    color: rgba(245, 247, 250, 0.72);
+  }
+
+  .hero h1 {
+    max-width: 22ch;
+    color: #fff;
+    text-shadow: 0 2px 30px rgba(0, 0, 0, 0.35);
+  }
+
+  .hero-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 2rem;
+    margin-top: clamp(2rem, 5vw, 3.5rem);
+  }
+
+  .hero .lede {
+    color: rgba(245, 247, 250, 0.8);
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    justify-self: end;
+  }
+
+  .hero-foot {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-top: clamp(3rem, 7vw, 6rem);
+    padding-top: 1.5rem;
+    padding-bottom: clamp(1.5rem, 3vw, 2.5rem);
+    border-top: 1px solid rgba(245, 247, 250, 0.16);
+  }
+
+  .hero-facts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(1.5rem, 4vw, 4rem);
+  }
+
+  .hero-facts li {
+    display: grid;
+    gap: 0.15rem;
+    color: rgba(245, 247, 250, 0.7);
+  }
+
+  .hero-facts .display {
+    font-size: var(--t-xl);
+    font-weight: 400;
+    color: #fff;
+  }
+
+  .hero-scroll {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: rgba(245, 247, 250, 0.6);
+    white-space: nowrap;
+  }
+
+  .hero-scroll i {
+    display: block;
+    width: 3rem;
+    height: 1px;
+    background: rgba(245, 247, 250, 0.4);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-scroll i::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--azure);
+    transform: translateX(-100%);
+    animation: scrollhint 2.2s var(--ease-expo) infinite;
+  }
+
+  @keyframes scrollhint {
+    40% {
+      transform: none;
+    }
+
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .strip {
+    position: relative;
+    z-index: 2;
+    padding-block: clamp(1.5rem, 3vw, 2.5rem) clamp(2rem, 4vw, 3rem);
+    background: var(--void);
+  }
+
+  .strip-item {
+    margin: 0;
+    width: clamp(12rem, 20vw, 20rem);
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+  }
+
+  .strip-item :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ---------- manifesto ---------- */
+  .manifesto-text {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 1rem + 2.6vw, 3.6rem);
+    font-weight: 380;
+    line-height: 1.18;
+    letter-spacing: -0.025em;
+    max-width: 26ch;
+    text-wrap: pretty;
+  }
+
+  .manifesto-link {
+    margin-top: 2.5rem;
+  }
+
+  /* ---------- pillars ---------- */
+  .pillars {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pillars-track {
+    display: flex;
+    gap: clamp(2rem, 4vw, 5rem);
+    padding: clamp(6rem, 12vh, 9rem) var(--gutter);
+    align-items: center;
+    height: 100vh;
+    height: 100svh;
+    will-change: transform;
+  }
+
+  .pillar {
+    flex: 0 0 auto;
+    width: clamp(20rem, 38vw, 34rem);
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .pillar-intro {
+    width: clamp(18rem, 30vw, 28rem);
+    align-content: center;
+    padding-right: 2rem;
+  }
+
+  .pillar-intro h2 {
+    font-size: var(--t-3xl);
+  }
+
+  .pillar-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 2rem;
+  }
+
+  .pillar-media {
+    aspect-ratio: 4 / 3;
+  }
+
+  .pillar-media :global(img) {
+    height: 116%;
+  }
+
+  .pillar-body {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .pillar-index {
+    font-size: var(--t-xs);
+    color: var(--fg-faint);
+  }
+
+  .pillar-body h3 {
+    max-width: 18ch;
+  }
+
+  .pillars-bar {
+    position: absolute;
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: clamp(2rem, 5vh, 3rem);
+    height: 1px;
+    background: var(--line);
+  }
+
+  .pillars-bar i {
+    display: block;
+    height: 100%;
+    background: var(--azure);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  @media (max-width: 899px) {
+    .pillars-track {
+      height: auto;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      padding-block: var(--section);
+    }
+
+    .pillars-track::-webkit-scrollbar {
+      display: none;
+    }
+
+    .pillar {
+      scroll-snap-align: start;
+      width: min(80vw, 24rem);
+    }
+
+    .pillars-bar {
+      display: none;
+    }
+  }
+
+  /* ---------- events ---------- */
+  .feature {
+    display: grid;
+    grid-template-columns: minmax(0, 0.38fr) minmax(0, 0.62fr);
+    gap: clamp(2rem, 5vw, 6rem);
+    align-items: center;
+    margin-bottom: clamp(3rem, 7vw, 6rem);
+  }
+
+  .feature-media {
+    display: block;
+    aspect-ratio: 4 / 5;
+    max-width: 30rem;
+  }
+
+  .feature-body {
+    display: grid;
+    gap: 1.25rem;
+    justify-items: start;
+  }
+
+  .feature-body h3 {
+    font-size: var(--t-3xl);
+    max-width: 14ch;
+  }
+
+  .feature-body p {
+    max-width: 48ch;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin: 0;
+  }
+
+  .meta div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .meta dt {
+    display: grid;
+    color: var(--azure);
+  }
+
+  .meta dd {
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .hlist {
+    position: relative;
+  }
+
+  .hlist-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .hlist-item {
+    display: grid;
+    grid-template-columns: 8rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.6rem 0;
+    border-top: 1px solid var(--line);
+    transition: padding 0.5s var(--ease-expo);
+  }
+
+  .hlist-items li:last-child .hlist-item {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .hlist-item:hover {
+    padding-left: 1.25rem;
+    padding-right: 0.5rem;
+  }
+
+  .hlist-date {
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+  }
+
+  .hlist-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 1rem + 2.4vw, 3.2rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    transition: color 0.3s;
+  }
+
+  .hlist-item:hover .hlist-title {
+    color: var(--azure);
+  }
+
+  .hlist-preview {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: clamp(12rem, 20vw, 18rem);
+    aspect-ratio: 4 / 5;
+    pointer-events: none;
+    z-index: 40;
+    opacity: 0;
+    transition: opacity 0.35s;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    will-change: transform;
+  }
+
+  .hlist-preview.is-on {
+    opacity: 1;
+  }
+
+  .hlist-preview :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ---------- wins ---------- */
+  .wins-grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--gap);
+    align-items: start;
+  }
+
+  .win {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .win .media {
+    aspect-ratio: 4 / 3;
+  }
+
+  .win-title {
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  .win-1 {
+    grid-column: 1 / span 5;
+  }
+
+  .win-2 {
+    grid-column: 7 / span 4;
+    margin-top: 6rem;
+  }
+
+  .win-3 {
+    grid-column: 2 / span 4;
+    margin-top: -2rem;
+  }
+
+  .win-4 {
+    grid-column: 8 / span 5;
+  }
+
+  .stats {
+    grid-column: 1 / -1;
+    list-style: none;
+    margin: clamp(2rem, 5vw, 4rem) 0 0;
+    padding: 2rem 0 0;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2rem;
+  }
+
+  .stats li {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .stat-num {
+    font-size: var(--t-3xl);
+    font-weight: 340;
+    letter-spacing: -0.04em;
+  }
+
+  /* ---------- placements ---------- */
+  .numbers {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+  }
+
+  .numbers li {
+    display: grid;
+    gap: 0.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .number {
+    font-size: clamp(3rem, 2rem + 5vw, 7rem);
+    font-weight: 300;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    color: #fff;
+  }
+
+  .logos {
+    margin-top: clamp(3rem, 7vw, 6rem);
+  }
+
+  .logo-plate {
+    display: grid;
+    place-items: center;
+    height: 6rem;
+    padding: 0 2.25rem;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--line);
+  }
+
+  .logo-plate :global(img) {
+    height: 2.25rem;
+    width: auto;
+    max-width: 9rem;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.85;
+  }
+
+  .brochure-row {
+    margin-top: 2.5rem;
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 900px) {
+    .hero-row {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-actions {
+      justify-self: start;
+    }
+
+    .feature {
+      grid-template-columns: 1fr;
+    }
+
+    .feature-media {
+      max-width: 22rem;
+    }
+
+    .win-1,
+    .win-2,
+    .win-3,
+    .win-4 {
+      grid-column: span 6;
+      margin-top: 0;
+    }
+
+    .stats,
+    .numbers {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .hero-foot {
+      flex-direction: column;
+      align-items: start;
+    }
+
+    .hero-scroll {
+      display: none;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .hlist-item {
+      grid-template-columns: 1fr auto;
+      gap: 0.5rem 1rem;
+    }
+
+    .hlist-date {
+      grid-column: 1 / -1;
+      order: -1;
+    }
+
+    .win-1,
+    .win-2,
+    .win-3,
+    .win-4 {
+      grid-column: 1 / -1;
+    }
+
+    .stats {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

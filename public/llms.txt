@@ -1,0 +1,29 @@
+# ACES CUSAT
+
+> ACES (Association of Computer Engineering Students) is the student association of the Division of Computer Engineering, School of Engineering, Cochin University of Science and Technology (CUSAT), Kochi, Kerala, India. Student-run since 2006. 400+ members.
+
+## What ACES does
+
+- Hands-on workshops (Git, VS Code, DevOps, cybersecurity, UI/UX)
+- Talks and sessions with alumni and industry engineers
+- Placement preparation: resume sessions, mock interviews (HireUp, with every SOE association)
+- Ideathons and hackathons (Ignite Ideas, Foundry), tech fest participation, first-year sessions
+- Study materials and previous-year question papers for CUSAT B.Tech Computer Engineering (2019 and 2023 schemes)
+- A newsletter and the division's placement brochure
+
+## Pages
+
+- [Home](https://acescusat.tech/): who we are and what's on
+- [Achievements](https://acescusat.tech/achievements): hackathon wins, ideathon prizes, internships
+- [Events](https://acescusat.tech/events): upcoming and past events
+- [Materials](https://acescusat.tech/materials): notes and question papers by scheme and semester
+- [Placements](https://acescusat.tech/placements): placement statistics, recruiters, testimonials, brochure PDF
+- [Newsletter](https://acescusat.tech/newsletter): issues of the department newsletter
+- [Team](https://acescusat.tech/team): the 2026–27 team and faculty
+
+## Contact
+
+- Join (WhatsApp): https://chat.whatsapp.com/BxtGNlqh1IJBP1W5qXcQ2o
+- Instagram: https://www.instagram.com/aces_cusat/
+- LinkedIn: https://www.linkedin.com/company/aces-cusat/
+- Faculty coordinator: Dr. M. Sudheep Elayidom, Division of Computer Engineering, SOE CUSAT

@@ -1,0 +1,51 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import Roll from './Roll.astro';
+import { site } from '../data/site';
+
+const path = Astro.url.pathname.replace(/index\.html$/, '').replace(/\.html$/, '').replace(/\/$/, '') || '/';
+---
+
+<header class="nav" data-nav>
+  <div class="nav-pill">
+    <a href="/" class="nav-brand" aria-label="ACES CUSAT, home" data-cursor="link">
+      <Logo size="4.2rem" />
+    </a>
+    <ul class="nav-links">
+      {site.nav.map((i) => (
+        <li>
+          <a href={i.href} aria-current={path === i.href ? 'page' : undefined} data-cursor="link">
+            <Roll text={i.label} />
+          </a>
+        </li>
+      ))}
+    </ul>
+    <a href={site.join} class="btn nav-cta" target="_blank" rel="noopener" data-cursor="link">
+      Join
+      <Icon name="arrow" />
+    </a>
+    <button class="nav-toggle" type="button" aria-controls="menu" aria-expanded="false" data-menu-btn>
+      <span class="sr-only">Menu</span>
+      <Icon name="menu" class="i-open" />
+      <Icon name="close" class="i-close" />
+    </button>
+  </div>
+</header>
+
+<nav class="menu" id="menu" aria-label="Menu" data-menu>
+  <ol>
+    {site.nav.map((i, n) => (
+      <li>
+        <a href={i.href} aria-current={path === i.href ? 'page' : undefined} style={`--i:${n}`}>
+          <span>{i.label}</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+  <div class="menu-foot">
+    <a href={site.join} target="_blank" rel="noopener">Join on WhatsApp</a>
+    <a href={site.social.instagram} target="_blank" rel="noopener">Instagram</a>
+    <a href={site.social.linkedin} target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+</nav>

@@ -1,0 +1,267 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { site } from '../data/site';
+import { events, upcoming, past, kindLabel, fmtDate, fmtTime } from '../data/events';
+
+const posterUrls = new Map<string, string>();
+for (const e of events) {
+  const img = await getImage({ src: e.poster, width: 600, format: 'webp' });
+  posterUrls.set(e.slug, new URL(img.src, site.url).toString());
+}
+
+const eventLd = events.map((e) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Event',
+  name: e.name,
+  startDate: e.start,
+  eventStatus: 'https://schema.org/EventScheduled',
+  eventAttendanceMode:
+    e.location === 'Online' ? 'https://schema.org/OnlineEventAttendanceMode' : 'https://schema.org/OfflineEventAttendanceMode',
+  location:
+    e.location === 'Online'
+      ? { '@type': 'VirtualLocation', url: `${site.url}/events#${e.slug}` }
+      : {
+          '@type': 'Place',
+          name: `${e.location}, School of Engineering, CUSAT`,
+          address: { '@type': 'PostalAddress', addressLocality: 'Kochi', addressRegion: 'Kerala', addressCountry: 'IN' },
+        },
+  description: e.summary,
+  organizer: { '@id': `${site.url}/#org` },
+  url: `${site.url}/events#${e.slug}`,
+  image: posterUrls.get(e.slug),
+}));
+
+const list = [...upcoming, ...past];
+---
+
+<Base
+  title="Events"
+  description="Upcoming and past ACES CUSAT events: workshops on Git, DevOps and cybersecurity, alumni talks, Ignite Ideas, Foundry, HireUp placement prep and first-year sessions at SOE CUSAT."
+  jsonLd={eventLd}
+>
+  <section class="container page-hero" data-theme="dark">
+    <span class="kicker" data-hero-fade>Events</span>
+    <h1 data-reveal="hero">Workshops, talks and the occasional chai.</h1>
+    <p class="lede" data-hero-fade>
+      Most of them in Software Block, some online. All of them free for SOE students.
+      {upcoming.length === 0 && ' Nothing on the calendar right now: the next one drops on Instagram first.'}
+    </p>
+  </section>
+
+  <section class="container section-tight" data-theme="dark">
+    <div class="hlist" data-hlist>
+      <div class="hlist-preview" data-hlist-preview aria-hidden="true">
+        {list.map((e) => (
+          <Image src={e.poster} alt="" widths={[420]} sizes="20vw" format="webp" loading="lazy" />
+        ))}
+      </div>
+      <ol class="list">
+        {list.map((e) => {
+          const up = new Date(e.start) >= new Date();
+          return (
+            <li class="item" id={e.slug} data-acc>
+              <button type="button" class="row" data-acc-btn data-hlist-item aria-expanded="false" data-cursor="open">
+                <span class="row-date tnum">
+                  <span class="d">{new Date(e.start).getDate()}</span>
+                  <span class="m small muted">{new Date(e.start).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' })}</span>
+                </span>
+                <span class="row-title">{e.name}</span>
+                <span class="row-meta">
+                  {up && <span class="tag tag-azure">Upcoming</span>}
+                  <span class="tag">{kindLabel[e.kind]}</span>
+                  <Icon name="plus" size={20} class="row-icon" />
+                </span>
+              </button>
+              <div class="body" data-acc-body>
+                <div class="body-inner">
+                  <div class="body-media media">
+                    <Image src={e.poster} alt={e.posterAlt} widths={[480, 760]} sizes="(max-width: 760px) 80vw, 24vw" format="webp" loading="lazy" />
+                  </div>
+                  <div class="body-text">
+                    <p>{e.summary}</p>
+                    <dl class="meta">
+                      <div><dt>When</dt><dd>{fmtDate(e.start)}, {fmtTime(e.start)}</dd></div>
+                      <div><dt>Where</dt><dd>{e.location}</dd></div>
+                      {e.by && <div><dt>Run by</dt><dd>{e.by.join(', ')}</dd></div>}
+                      {e.with && <div><dt>With</dt><dd>{e.with.join(', ')}</dd></div>}
+                    </dl>
+                    {e.registerUrl && (
+                      <a href={e.registerUrl} class="btn btn-azure" target="_blank" rel="noopener" data-cursor="link">
+                        {up ? 'Register' : 'Event site'} <Icon name="arrow" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  </section>
+
+</Base>
+
+<style>
+  .hlist {
+    position: relative;
+  }
+
+  .hlist-preview {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: clamp(12rem, 18vw, 17rem);
+    aspect-ratio: 4 / 5;
+    pointer-events: none;
+    z-index: 40;
+    opacity: 0;
+    transition: opacity 0.35s;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    will-change: transform;
+  }
+
+  .hlist-preview.is-on {
+    opacity: 1;
+  }
+
+  .hlist-preview :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .item {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .row {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.6rem 0;
+    background: none;
+    border: 0;
+    text-align: left;
+    cursor: pointer;
+    transition: padding 0.5s var(--ease-expo);
+  }
+
+  .row:hover {
+    padding-left: 1.25rem;
+  }
+
+  .row-date {
+    display: grid;
+    line-height: 1.1;
+  }
+
+  .row-date .d {
+    font-family: var(--font-display);
+    font-size: var(--t-2xl);
+    font-weight: 380;
+    letter-spacing: -0.03em;
+  }
+
+  .row-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 1rem + 2.4vw, 3.2rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    transition: color 0.3s;
+  }
+
+  .row:hover .row-title {
+    color: var(--azure);
+  }
+
+  .row-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .row-icon {
+    transition: transform 0.5s var(--ease-expo);
+  }
+
+  [data-open] .row-icon {
+    transform: rotate(45deg);
+  }
+
+  .body-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 0.28fr) minmax(0, 0.72fr);
+    gap: 2.5rem;
+    padding: 0.5rem 0 2.5rem 7rem;
+  }
+
+  .body-media {
+    aspect-ratio: 4 / 5;
+    max-width: 18rem;
+  }
+
+  .body-text {
+    display: grid;
+    gap: 1.5rem;
+    justify-items: start;
+    align-content: start;
+    max-width: 56ch;
+  }
+
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem 2rem;
+    margin: 0;
+  }
+
+  .meta dt {
+    font-size: var(--t-xs);
+    color: var(--fg-muted);
+    margin-bottom: 0.2rem;
+  }
+
+  .meta dd {
+    margin: 0;
+    font-weight: 500;
+  }
+
+  @media (max-width: 760px) {
+    .row {
+      grid-template-columns: 1fr;
+      gap: 0.6rem;
+    }
+
+    .row-date {
+      grid-auto-flow: column;
+      justify-content: start;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+
+    .body-inner {
+      grid-template-columns: 1fr;
+      padding-left: 0;
+    }
+
+    .row-icon {
+      display: none;
+    }
+  }
+</style>

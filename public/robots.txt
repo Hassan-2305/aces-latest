@@ -1,0 +1,5 @@
+# ACES CUSAT — everyone welcome, crawlers included.
+User-agent: *
+Allow: /
+
+Sitemap: https://acescusat.tech/sitemap-index.xml

@@ -1,0 +1,204 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import Roll from './Roll.astro';
+import { site } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="footer" id="join" data-theme="dark">
+  <div class="footer-glow glow" aria-hidden="true"></div>
+  <div class="container">
+    <div class="footer-cta">
+      <p class="small muted">Computer Engineering student at SOE? You are already in. The group chat is one tap away.</p>
+      <h2 class="footer-title" data-reveal="lines">Join ACES</h2>
+      <div class="footer-actions">
+        <a href={site.join} class="btn-round is-primary" target="_blank" rel="noopener" data-magnetic data-cursor="link">
+          <span>WhatsApp<br />group</span>
+        </a>
+        <a href={site.social.instagram} class="btn-round" target="_blank" rel="noopener" data-magnetic data-cursor="link">
+          <span>Instagram</span>
+        </a>
+        <a href={site.social.linkedin} class="btn-round" target="_blank" rel="noopener" data-magnetic data-cursor="link">
+          <span>LinkedIn</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-grid">
+      <address class="footer-addr">
+        <strong>{site.fullName}</strong><br />
+        Division of Computer Engineering<br />
+        School of Engineering, CUSAT<br />
+        Kochi, Kerala {site.address.pin}
+      </address>
+      <nav class="footer-links" aria-label="Footer">
+        {site.nav.map((i) => <a href={i.href} data-cursor="link"><Roll text={i.label} /></a>)}
+      </nav>
+      <div class="footer-links">
+        <a href={site.join} target="_blank" rel="noopener" data-cursor="link"><Roll text="WhatsApp" /></a>
+        <a href={site.social.instagram} target="_blank" rel="noopener" data-cursor="link"><Roll text="Instagram" /></a>
+        <a href={site.social.linkedin} target="_blank" rel="noopener" data-cursor="link"><Roll text="LinkedIn" /></a>
+        <a href="https://soe.cusat.ac.in" target="_blank" rel="noopener" data-cursor="link"><Roll text="SOE CUSAT" /></a>
+      </div>
+    </div>
+
+    <div class="footer-mark" aria-hidden="true">
+      <Logo size="100%" />
+    </div>
+
+    <div class="footer-bottom small muted">
+      <p>Made by students at Software Block. &copy; {year} ACES CUSAT.</p>
+      <button type="button" class="to-top" data-to-top data-cursor="link">
+        Back to top <Icon name="arrow" size={16} />
+      </button>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    position: relative;
+    overflow: hidden;
+    background: var(--void);
+    color: var(--fog);
+    padding-top: var(--section);
+  }
+
+  .footer-glow {
+    width: 60vw;
+    height: 60vw;
+    left: -20vw;
+    bottom: -30vw;
+    opacity: 0.6;
+  }
+
+  .footer-cta {
+    position: relative;
+    display: grid;
+    gap: 1.5rem;
+    padding-bottom: clamp(3rem, 6vw, 6rem);
+  }
+
+  .footer-title {
+    font-size: var(--t-mega);
+    font-weight: 300;
+    letter-spacing: -0.045em;
+    line-height: 0.9;
+    color: #fff;
+  }
+
+  .footer-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .footer-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    gap: 2rem;
+    padding: 3rem 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .footer-addr {
+    font-style: normal;
+    color: var(--fg-muted);
+    font-size: var(--t-sm);
+    line-height: 1.7;
+  }
+
+  .footer-addr strong {
+    color: var(--fog);
+    font-weight: 500;
+  }
+
+  .footer-links {
+    display: grid;
+    align-content: start;
+    gap: 0.5rem;
+    font-size: var(--t-sm);
+    color: var(--fg-muted);
+  }
+
+  .footer-links a:hover {
+    color: #fff;
+  }
+
+  .footer-mark {
+    position: relative;
+    color: rgba(245, 247, 250, 0.1);
+    padding: 3rem 0 0;
+  }
+
+  .footer-mark :global(.logo) {
+    --w: 100%;
+    width: 100%;
+  }
+
+  .footer-mark :global(.logo-sub) {
+    font-size: clamp(2rem, 9vw, 9rem);
+    letter-spacing: 0.3em;
+    margin-right: -0.3em;
+    opacity: 1;
+  }
+
+  .is-primary {
+    border-color: var(--azure);
+    color: #fff;
+    background: var(--azure);
+  }
+
+  .is-primary::before {
+    background: #fff;
+  }
+
+  .is-primary:hover {
+    color: var(--ink);
+  }
+
+  .footer-bottom {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 1.5rem 0 2rem;
+  }
+
+  .to-top {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: none;
+    border: 0;
+    color: var(--fg-muted);
+    cursor: pointer;
+  }
+
+  .to-top svg {
+    transform: rotate(-90deg);
+  }
+
+  .to-top:hover {
+    color: #fff;
+  }
+
+  .footer-links :global(.clone .ch) {
+    color: #fff;
+  }
+
+  @media (max-width: 760px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .footer-addr {
+      grid-column: 1 / -1;
+    }
+  }
+</style>
