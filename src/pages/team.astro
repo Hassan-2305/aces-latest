@@ -9,7 +9,7 @@ const chair = core[0];
 
 <Base
   title={`Team ${year}`}
-  description={`The ${year} ACES CUSAT team: ${headcount} students across media, content, sponsorship, alumni, outreach and tech, plus the faculty coordinators of the Division of Computer Engineering, SOE CUSAT.`}
+  description={`The ${year} ACES CUSAT team: ${headcount} students across tech, curation, events, media, content, sponsorship, outreach, alumni and extracurricular, plus the faculty coordinators of the Division of Computer Engineering, SOE CUSAT.`}
 >
   <section class="container page-hero" data-theme="dark">
     <span class="kicker" data-hero-fade>Team, {year} · {headcount} people</span>
@@ -17,10 +17,34 @@ const chair = core[0];
     <p class="lede" data-hero-fade>If something on this site is wrong, it is one of these people’s fault. Say hi at the next session.</p>
   </section>
 
-  <section class="container section-tight" data-theme="dark">
+  <section class="container section-tight" data-theme="dark" aria-label="Faculty">
+    <div class="head">
+      <div class="head-row"><span>Faculty</span></div>
+      <h2 data-reveal="lines">The two people who sign the forms.</h2>
+    </div>
+    <ul class="faculty">
+      {faculty.map((f) => (
+        <li class="fac">
+          <div class="fac-media media" data-img-reveal>
+            {f.photo && <Image src={f.photo} alt={`Portrait of ${f.name}`} width={480} height={480} format="webp" loading="eager" />}
+          </div>
+          <div class="fac-body">
+            <h3>{f.name}</h3>
+            <p class="small muted">{f.role}, Division of Computer Engineering</p>
+            {f.note && <blockquote class="fac-quote" data-fade>{f.note}</blockquote>}
+          </div>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="container section-tight" data-theme="dark" aria-label="Core team">
+    <div class="head">
+      <div class="head-row"><span>Core team</span><span class="tnum">{core.length} people</span></div>
+    </div>
     <ul class="people">
       {core.map((m, i) => (
-        <li class="person" style={`--i:${i}`}>
+        <li class="person" style={`--i:${i % 3}`}>
           <div class="person-media media notch" data-img-reveal data-parallax>
             {m.photo && (
               <Image src={m.photo} alt={`Portrait of ${m.name}`} width={720} height={900} format="webp" loading="eager" style={m.focus ? `object-position:${m.focus}` : undefined} />
@@ -72,27 +96,6 @@ const chair = core[0];
         </section>
       ))}
     </div>
-  </section>
-
-  <section class="container section" data-theme="light">
-    <div class="head">
-      <div class="head-row"><span>Faculty</span></div>
-      <h2 data-reveal="lines">The two people who sign the forms.</h2>
-    </div>
-    <ul class="faculty">
-      {faculty.map((f) => (
-        <li class="fac">
-          <div class="fac-media media" data-img-reveal>
-            {f.photo && <Image src={f.photo} alt={`Portrait of ${f.name}`} width={480} height={480} format="webp" loading="lazy" />}
-          </div>
-          <div class="fac-body">
-            <h3>{f.name}</h3>
-            <p class="small muted">{f.role}, Division of Computer Engineering</p>
-            {f.note && <blockquote class="fac-quote" data-fade>{f.note}</blockquote>}
-          </div>
-        </li>
-      ))}
-    </ul>
   </section>
 
   <section class="container section-tight" data-theme="light">
@@ -221,6 +224,11 @@ const chair = core[0];
     align-items: start;
     padding: 2.5rem 0;
     border-top: 1px solid var(--line);
+  }
+
+  .fac:first-child {
+    border-top: 0;
+    padding-top: 0;
   }
 
   .fac-media {

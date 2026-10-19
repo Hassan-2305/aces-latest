@@ -99,42 +99,71 @@ function curtainOut() {
     .set(c, { yPercent: 115 });
 }
 
+function seen() {
+  try {
+    if (sessionStorage.getItem('aces-seen')) return true;
+    sessionStorage.setItem('aces-seen', '1');
+  } catch {}
+  return false;
+}
+
+/** Resolves on window load, or after `max` ms, whichever comes first. */
+function pageLoaded(max: number) {
+  if (document.readyState === 'complete') return Promise.resolve();
+  return new Promise<void>((res) => {
+    window.addEventListener('load', () => res(), { once: true });
+    setTimeout(res, max);
+  });
+}
+
 function runLoader(): Promise<void> {
   const loader = $('[data-loader]');
-  if (!loader) return Promise.resolve();
-  const seen = sessionStorage.getItem('aces-seen');
-  if (seen || REDUCE) {
-    document.documentElement.classList.remove('is-loading');
+  const done = () => document.documentElement.classList.remove('is-loading');
+  if (!loader || REDUCE || seen()) {
+    done();
     return Promise.resolve();
   }
-  sessionStorage.setItem('aces-seen', '1');
   loader.classList.add('is-on');
   lock(true);
-  const count = loader.querySelector('.loader-count')!;
-  const bar = loader.querySelector('.loader-bar')!;
-  const mark = loader.querySelector('.loader-mark')!;
+  const num = $('[data-loader-num]', loader)!;
+  const bar = $('.loader-bar', loader)!;
+  const mark = $('.loader-mark', loader)!;
+  const tag = $('.loader-tag', loader)!;
+  const glow = $('.loader-glow', loader)!;
+  const foot = $('.loader-foot', loader)!;
   const n = { v: 0 };
+  const draw = () => {
+    num.textContent = String(Math.round(n.v));
+    gsap.set(bar, { scaleX: n.v / 100 });
+  };
+
   return new Promise((res) => {
-    gsap
-      .timeline({
-        onComplete: () => {
-          loader.classList.remove('is-on');
-          document.documentElement.classList.remove('is-loading');
-          lock(false);
-        },
-      })
-      .to(n, {
-        v: 100,
-        duration: 1.5,
-        ease: 'power2.inOut',
-        onUpdate: () => (count.textContent = String(Math.round(n.v))),
-      })
-      .to(bar, { scaleX: 1, duration: 1.5, ease: 'power2.inOut' }, 0)
-      .to(mark, { opacity: 1, duration: 0.8, ease: 'power2.out' }, 0.35)
-      .to([count, mark], { opacity: 0, duration: 0.35 }, '+=0.15')
-      .add(res, '-=0.15')
-      .to(loader, { yPercent: -100, duration: 1, ease: 'expo.inOut' }, '<')
-      .set(loader, { yPercent: 0, visibility: 'hidden' });
+    // intro: mark wipes up, tagline and glow follow, count runs to ~85 while assets load
+    const intro = gsap
+      .timeline()
+      .to(mark, { clipPath: 'inset(0% 0 0 0)', duration: 1.1, ease: 'expo.inOut' }, 0)
+      .fromTo(mark, { y: 24 }, { y: 0, duration: 1.4 }, 0.1)
+      .to(glow, { opacity: 1, duration: 1.6, ease: 'power2.out' }, 0.2)
+      .fromTo(tag, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.9 }, 0.6)
+      .to(n, { v: 85, duration: 1.3, ease: 'power2.out', onUpdate: draw }, 0);
+
+    Promise.all([intro.then(), pageLoaded(3500)]).then(() => {
+      gsap
+        .timeline({
+          onComplete: () => {
+            loader.classList.remove('is-on');
+            gsap.set(loader, { yPercent: 0, visibility: 'hidden' });
+            done();
+            lock(false);
+          },
+        })
+        .to(n, { v: 100, duration: 0.45, ease: 'power2.inOut', onUpdate: draw })
+        .to([tag, foot], { opacity: 0, y: -12, duration: 0.4, ease: 'power2.in' }, '+=0.1')
+        .to(mark, { y: -40, opacity: 0, duration: 0.6, ease: 'power3.in' }, '<')
+        .to(glow, { opacity: 0, scale: 1.3, duration: 0.6 }, '<')
+        .add(res, '-=0.1')
+        .to(loader, { yPercent: -115, duration: 1.05, ease: 'expo.inOut' }, '<');
+    });
   });
 }
 
@@ -282,13 +311,26 @@ function counters(scope: ParentNode) {
 
 function themes(scope: ParentNode) {
   const secs = $$('main [data-theme], footer[data-theme]', scope);
+  if (!secs.length) return;
+  const fallback = document.body.dataset.theme || 'dark';
+  const active = new Set<HTMLElement>();
+  // Light bands win any overlap, and their window is wider than the dark ones,
+  // so the page flips to light early and holds it until the band has mostly left.
+  const apply = () => {
+    const on = [...active];
+    const theme = on.some((s) => s.dataset.theme === 'light') ? 'light' : (on[on.length - 1]?.dataset.theme ?? fallback);
+    document.body.dataset.theme = theme;
+  };
   secs.forEach((sec) => {
+    const light = sec.dataset.theme === 'light';
     ScrollTrigger.create({
       trigger: sec,
-      start: 'top 50%',
-      end: 'bottom 50%',
+      start: light ? 'top 85%' : 'top 50%',
+      end: light ? 'bottom 20%' : 'bottom 50%',
       onToggle: (self) => {
-        if (self.isActive) document.body.dataset.theme = sec.dataset.theme;
+        if (self.isActive) active.add(sec);
+        else active.delete(sec);
+        apply();
       },
     });
   });
@@ -439,7 +481,8 @@ function menu() {
 function anchors(scope: ParentNode) {
   $$('a[href^="#"]', scope).forEach((a) => {
     a.addEventListener('click', (e) => {
-      const target = $(a.getAttribute('href')!);
+      const id = decodeURIComponent(a.getAttribute('href')!.slice(1));
+      const target = id ? document.getElementById(id) : null;
       if (!target) return;
       e.preventDefault();
       if (lenis) lenis.scrollTo(target, { offset: -40 });
@@ -627,7 +670,13 @@ document.addEventListener('astro:before-preparation', (ev) => {
     await load();
   };
 });
-document.addEventListener('astro:before-swap', teardown);
+document.addEventListener('astro:before-swap', (ev) => {
+  // Astro replaces every attribute on <html> during the swap; carry over the
+  // runtime classes (js, has-cursor, lenis*) or the next page loses them.
+  const keep = [...document.documentElement.classList].filter((c) => c !== 'is-loading');
+  (ev as any).newDocument.documentElement.classList.add(...keep);
+  teardown();
+});
 document.addEventListener('astro:after-swap', () => {
   window.scrollTo(0, 0);
   lenis?.scrollTo(0, { immediate: true, force: true });

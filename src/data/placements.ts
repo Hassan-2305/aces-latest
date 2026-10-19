@@ -18,7 +18,7 @@ import harsh from '../assets/people/harsh-dubey.png';
 import sheethal from '../assets/people/sheethal-joshy-thomas.png';
 
 export const headline = [
-  { value: 13, prefix: '₹', suffix: ' LPA', label: 'Highest package, 2024–25' },
+  { value: 29, prefix: '₹', suffix: ' LPA', label: 'Highest package' },
   { value: 50, prefix: '#', suffix: '', label: 'NIRF rank, Govt. of India' },
   { value: 52, prefix: '', suffix: '', label: 'Offers in the 2025 season' },
 ];

@@ -105,8 +105,15 @@ const ld = [organization, ...jsonLd];
     <a class="skip" href="#main">Skip to content</a>
 
     <div class="loader" data-loader transition:persist="loader" aria-hidden="true">
-      <div class="loader-mark"><Logo size="clamp(10rem, 22vw, 18rem)" /></div>
-      <div class="loader-count tnum">0</div>
+      <div class="loader-glow"></div>
+      <div class="loader-inner">
+        <div class="loader-mark"><Logo size="clamp(9rem, 20vw, 16rem)" /></div>
+        <p class="loader-tag">{site.fullName}</p>
+      </div>
+      <div class="loader-foot">
+        <span class="loader-meta">SOE CUSAT<br />Since {site.founded}</span>
+        <span class="loader-count tnum"><span data-loader-num>0</span><i>%</i></span>
+      </div>
       <div class="loader-bar"></div>
     </div>
 
@@ -125,7 +132,7 @@ const ld = [organization, ...jsonLd];
 
     <dialog class="lightbox" data-lightbox>
       <figure>
-        <img src="" alt="" />
+        <img alt="" />
         <figcaption></figcaption>
       </figure>
     </dialog>

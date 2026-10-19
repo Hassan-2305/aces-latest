@@ -898,26 +898,95 @@ button:hover .roll .clone .ch {
   visibility: hidden;
 }
 
+/* curved trailing edge, visible while the loader lifts away */
+.loader::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 14vh;
+  background: inherit;
+  border-radius: 0 0 50% 50% / 0 0 100% 100%;
+}
+
 .loader.is-on,
 .is-loading .loader {
   visibility: visible;
 }
 
-.loader-count {
+.loader-glow {
   position: absolute;
-  right: var(--gutter);
-  bottom: var(--gutter);
-  font-family: var(--font-display);
-  font-size: clamp(4rem, 12vw, 11rem);
-  font-weight: 300;
-  letter-spacing: -0.04em;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
+  left: 50%;
+  top: 50%;
+  width: min(70vw, 46rem);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 127, 255, 0.22), rgba(110, 91, 255, 0.08) 45%, transparent 70%);
+  filter: blur(30px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loader-inner {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: clamp(1.25rem, 2.5vw, 2rem);
+  padding-inline: var(--gutter);
+  text-align: center;
 }
 
 .loader-mark {
   color: #fff;
+  clip-path: inset(100% 0 0 0);
+}
+
+.loader-tag {
+  margin: 0;
+  font-size: var(--t-xs);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: rgba(245, 247, 250, 0.6);
   opacity: 0;
+}
+
+.loader-foot {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: calc(var(--gutter) * 0.75);
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.loader-meta {
+  font-size: var(--t-xs);
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(245, 247, 250, 0.42);
+}
+
+.loader-count {
+  display: inline-flex;
+  align-items: start;
+  font-family: var(--font-display);
+  font-size: clamp(3.5rem, 10vw, 9rem);
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  line-height: 0.85;
+  font-variant-numeric: tabular-nums;
+}
+
+.loader-count i {
+  font-style: normal;
+  font-size: 0.32em;
+  margin-left: 0.2em;
+  color: var(--azure);
 }
 
 .loader-bar {
