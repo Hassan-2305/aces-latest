@@ -6,7 +6,7 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://acescusat.tech',
   trailingSlash: 'never',
-  build: { format: 'file' },
+  build: { format: 'directory' },
   integrations: [
     sitemap({
       changefreq: 'weekly',
