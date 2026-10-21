@@ -1,12 +1,11 @@
 import type { ImageMetadata } from 'astro';
 import sudheep from '../assets/team/sudheep-elayidom.jpeg';
-import pramod from '../assets/team/pramod-pavithran.png';
-import afnash from '../assets/team/afnash-ali-p.jpg';
+import damodaran from '../assets/team/v-damodaran.jpeg';
+import afnash from '../assets/team/afnash-ali-p.png';
 import layana from '../assets/team/layana-v-m.jpg';
 import sajad from '../assets/team/sajad-hussain-malla.jpg';
 import jyothikrishna from '../assets/team/jyothikrishna-s.jpg';
 import ruvais from '../assets/team/ruvais-p.jpg';
-import srikumari from '../assets/team/srikumari-s.jpg';
 import adith from '../assets/team/adith-r-lal.jpg';
 import hassan from '../assets/team/mohammed-hassan.jpg';
 import devikaKumar from '../assets/team/devika-s-kumar.jpg';
@@ -53,7 +52,7 @@ export const core: Member[] = [
   { name: 'Sajad Hussain Malla', role: 'Secretary', photo: sajad },
   { name: 'Jyothikrishna S', role: 'Joint Secretary', photo: jyothikrishna },
   { name: 'Ruvais P', role: 'Treasurer', photo: ruvais },
-  { name: 'Srikumari S', role: 'Co-Treasurer', photo: srikumari },
+  { name: 'Devika S Kumar', role: 'Co-Treasurer', photo: devikaKumar },
 ];
 
 export const groups: Group[] = [
@@ -64,11 +63,6 @@ export const groups: Group[] = [
       { name: 'Adith R Lal', role: 'Tech lead', photo: adith },
       { name: 'Mohammed Hassan', role: 'Tech co-lead', photo: hassan, focus: '50% 38%' },
     ],
-  },
-  {
-    name: 'Curation',
-    blurb: 'What we run, and who we bring in to run it.',
-    members: [{ name: 'Devika S Kumar', role: 'Curation lead', photo: devikaKumar }],
   },
   {
     name: 'Events',
@@ -146,10 +140,9 @@ export const faculty: Member[] = [
     note: 'ACES is a great platform for B.Tech Computer Engineering students to gather knowledge from expert talks, seminars and hackathons. Alumni from top MNCs find time to share knowledge with current students, offer internships and guide them to great placements.',
   },
   {
-    name: 'Dr. Pramod Pavithran',
+    name: 'Mr. V. Damodaran',
     role: 'Head of Division',
-    photo: pramod,
-    note: 'The involvement of our alumni in mentoring students and offering internships is truly appreciable. ACES creates opportunities for every student to participate and showcase their talents through well-organised technical events.',
+    photo: damodaran,
   },
 ];
 
