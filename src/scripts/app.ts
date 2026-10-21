@@ -622,7 +622,7 @@ async function initPage() {
       counters(scope);
       themes(scope);
       marqueeSkew(scope);
-      navHide();
+      if (fine) navHide(); // touch screens keep the nav still
       if (fine) {
         hoverLists(scope);
         magnetic(scope);

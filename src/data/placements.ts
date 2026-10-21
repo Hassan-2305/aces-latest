@@ -16,6 +16,7 @@ import visteon from '../assets/companies/visteon.png';
 import durga from '../assets/team/durga-sumesh.png';
 import harsh from '../assets/people/harsh-dubey.png';
 import sheethal from '../assets/people/sheethal-joshy-thomas.png';
+import sebin from '../assets/people/sebin-thomas.jpeg';
 
 export const headline = [
   { value: 29, prefix: '₹', suffix: ' LPA', label: 'Highest package' },
@@ -71,6 +72,13 @@ export const testimonials = [
     company: 'Salescode.ai',
     photo: sheethal,
     quote: 'The curriculum and placement training prepared me perfectly for real-world industry expectations.',
+  },
+  {
+    name: 'Sebin Thomas',
+    company: 'Placed, final year',
+    photo: sebin,
+    quote:
+      "The education and experience I received from SOE's CS department laid the cornerstone of my career development. From helping me develop my technical and communication skills to helping me grow my professional network, my student life under the CS department has impacted me immensely.",
   },
 ];
 
